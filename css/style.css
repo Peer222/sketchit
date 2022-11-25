@@ -61,10 +61,14 @@ img {
     max-width:100%;
 }
 
+.example_image {
+    margin: 20px;
+    max-height: 30vh;
+}
+
 ol, p {
     margin: 10px 25px;
     padding: 10px;
-    border: 1px solid green;
 }
 li {
     padding: 6px;
@@ -73,6 +77,9 @@ li {
 h1 {
     cursor: pointer;
     font-family: Roboto_Bold, sans-serif;
+}
+h2 {
+    align-self: center;
 }
 
 .row_container {
@@ -89,10 +96,13 @@ h1 {
     max-width: 100vw;
     width: 100vw; /* check image containers as well */
     height: 80vh;
-    align-items: center;
     padding: 0 20px;
     box-sizing: border-box;
     overflow: hidden;
+    justify-content: center;
+}
+#canvas_container {
+    align-items: center;
 }
 
 #image_container {
