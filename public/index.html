@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Sketch it!</title>
+    <link rel="icon" type="image/png" href="img/pencil.png">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+
+  <body class="col_container">
+    <div class="col_container" style="align-items: center;">
+      <h1>
+        Sketch it!
+      </h1>
+      <div id="button_row" class="row_container">
+        <!--<button id="undo"> Undo </button>
+        <button id="redo"> Redo </button>-->
+        <button id="show_img"> Show Image </button>
+      </div>
+    </div>
+
+    <div id="canvas_container" class="col_container content" style="display: none;">
+      <div id="image_container">
+        <img id="image" src="", alt="image">
+        <canvas id="canvas">  </canvas>
+        <button id="erase_paint"> Erase </button>
+      </div>
+      <div class="row_container">
+        <button id="new_image"> New Image </button>
+        <button id="submit"> Submit Sketch</button>
+      </div>
+    </div>
+    <div id="example_container" class="row_container content">
+      <div class="col_container">
+        <h2> Tutorial </h2>
+        <ol>
+          <li> Click New Image </li>
+          <li> Image is visible for 2 seconds </li>
+          <li> Noise image is shown </li>
+          <li> Canvas to sketch </li>
+          <li> Submit your sketch if finished. </li>
+        </ol>
+        <p>
+          If you think you can't sketch the image. Click New Image to get a new one.
+          <br> <br>
+          Important: After reshowing the image the canvas is cleared. 
+        </p>
+      </div>
+      <div class="col_container">
+        <h2> Example </h2>
+        <img src="img/example3.jpg" alt="example art painting" class="example_image">
+        <img src="img/sketch_example.png" alt="example sketch" class="example_image">
+      </div>
+    </div>
+  
+    <script src="client.js"></script>
+  </body>
+</html>
