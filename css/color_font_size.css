@@ -1,0 +1,19 @@
+:root {
+    /*colors*/
+    --innerBackground: #292424;
+    --lightenInnerBackground: #322C2C;
+    --outerBackground: #191414;
+    --lightFontColor: white;
+    --hoverColor: #393434;
+    --lightGrey: #888888;
+    --activeToggleSwitchColor: #1DB95444;/*rgb(108,122,111);/*rgb(95,126,100); #88888855;*/
+}
+
+@font-face {
+    font-family: Roboto_Light;
+    src: url(../font/Roboto-Light.ttf);
+}
+@font-face {
+    font-family: Roboto_Bold;
+    src: url(../font/Roboto-Bold.ttf);
+}
