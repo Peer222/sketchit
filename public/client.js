@@ -62,25 +62,22 @@ let home_button = document.getElementsByTagName('h1')[0]
 
 // other elements
 let image = document.getElementById('image')
-//noise = document.getElementById('noise')
 let canvas = document.getElementById('canvas')
 let example_container = document.getElementById('example_container')
 let canvas_container = document.getElementById('canvas_container')
 let image_container = document.getElementById('image_container')
+let submitted_message = document.getElementById('submitted')
 
 
 // event listeners for buttons
 show_image_button.addEventListener('click', () => {
-    canvas_container.style.display = 'flex'
-    example_container.style.display = 'none'
-    
-    if (current_image_idx < 0) get_new_image()
+    if (current_image_idx < 0 || sketch_uploaded) get_new_image()
     else show_image('paintings/' + image_names[current_image_idx])
 })
 
 submit_button.addEventListener('click', () => {
     if (sketch_started) upload_sketch()
-    else alert("No sketch to save")
+    else alert("Submitting sketch failed")
 })
 
 home_button.addEventListener('click', () => {
@@ -103,7 +100,10 @@ erase_paint_button.addEventListener('click', (event) => {
 // helper functions
 function upload_sketch() {
     console.log("upload sketch")
-    sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
+    let sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
+
+    canvas_container.style.pointerEvents = 'none'
+    submitted_message.style.display = 'flex'
 
     // saves sketch locally
     /*
@@ -116,6 +116,11 @@ function upload_sketch() {
 }
 
 function get_new_image() {
+    canvas_container.style.display = 'flex'
+    example_container.style.display = 'none'
+    submitted_message.style.display = 'none'
+    canvas_container.style.pointerEvents = 'auto'
+
     current_image_idx = Math.floor(Math.random() * image_names.length)
     show_image('paintings/' + image_names[current_image_idx])
 }
@@ -148,6 +153,7 @@ canvas_context.strokeStyle = 9
 
 let is_drawing = false
 let sketch_started = false
+let sketch_uploaded = false
 const LINE_WIDTH = 6
 
 let erase_mode = false
