@@ -177,22 +177,6 @@ const LINE_WIDTH = 6
 
 let erase_mode = false
 
-canvas.addEventListener('mousedown', (e) => {
-    is_drawing = true
-    sketch_started = true
-    canvas_context.beginPath()
-})
-
-window.addEventListener('mouseup', (e) => {
-    is_drawing = false
-    if (e.target === canvas) {
-        canvas_context.stroke()
-        canvas_context.closePath()
-    }
-})
-
-canvas.addEventListener('mousemove', draw)
-
 function build_canvas() {
     image_container.style.backgroundImage = ''
     canvas_context.clearRect(0, 0, canvas.width, canvas.height) // clears canvas
@@ -214,8 +198,38 @@ function build_canvas() {
     sketch_started = false
 }
 
+canvas.addEventListener('mousedown', start_draw)
+window.addEventListener('mouseup', end_draw)
+canvas.addEventListener('mousemove', draw)
+
+canvas.addEventListener("touchstart", start_draw)
+window.addEventListener("touchend", end_draw)
+canvas.addEventListener("touchmove", draw)
+
+const is_touch_device = window.matchMedia('(hover: none)').matches
+
+function start_draw(e) {
+    is_drawing = true
+    sketch_started = true
+    canvas_context.beginPath()
+}
+
+function end_draw(e) {
+    is_drawing = false
+    if (e.target === canvas) {
+        canvas_context.stroke()
+        canvas_context.closePath()
+    }
+}
+
 function draw(e) {
     if (!is_drawing) return
+    let x = e.clientX
+    let y = e.clientY
+    if (is_touch_device) {
+        x = e.touches[0].clientX
+        y = e.touches[0].clientY
+    }
 
     if (erase_mode) {
         canvas_context.strokeStyle = '#ffffff'
@@ -225,7 +239,7 @@ function draw(e) {
         canvas_context.strokeStyle = '#000000'
     }
     canvas_context.lineCap = 'round'
-    canvas_context.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top)
+    canvas_context.lineTo(x - canvas.getBoundingClientRect().left, y - canvas.getBoundingClientRect().top)
     //canvas_context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop) without position relative of image container
     canvas_context.stroke()
 }
