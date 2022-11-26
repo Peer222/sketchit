@@ -1,7 +1,7 @@
 // storage connection
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js" //from "firebase/app"
-import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-storage.js" //from "firebase/storage"
+import { getStorage, ref, getDownloadURL, uploadBytes } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-storage.js" //from "firebase/storage"
 
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
@@ -17,6 +17,7 @@ const app = initializeApp(firebaseConfig)
 const storage = getStorage(app)
 
 const namesRef = ref(storage, 'painting_names.csv')
+const sketchRef = ref(storage, 'sketches')
 
 let image_names = []
 let current_image_idx = -1
@@ -99,11 +100,29 @@ erase_paint_button.addEventListener('click', (event) => {
 
 // helper functions
 function upload_sketch() {
-    console.log("upload sketch")
-    let sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
+    //let sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
+    let sketch_data = canvas.toDataURL('image/png')
+    sketch_data = sketch_data.replace('data:image/png;base64,', "")
 
-    canvas_container.style.pointerEvents = 'none'
-    submitted_message.style.display = 'flex'
+    // https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+    const byteCharacters = atob(sketch_data)
+    const byteNumbers = new Array(byteCharacters.length)
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i)
+    }
+    sketch_data = new Uint8Array(byteNumbers)
+
+    let random_number = Math.floor(Math.random() * 100000000)
+    let file_name = current_image_idx.toString() + '-' + image_names[current_image_idx].split('.')[0] + '-' + random_number + '.' + 'png'
+
+    const fileRef = ref(sketchRef, file_name)
+    const metadata = { contentType: 'image/png' }
+
+    uploadBytes(fileRef, sketch_data, metadata).then(() => {
+        console.log('Uploaded sketch: ' + file_name)
+        canvas_container.style.pointerEvents = 'none'
+        submitted_message.style.display = 'flex'
+      })
 
     // saves sketch locally
     /*
@@ -139,7 +158,7 @@ function show_image(path) {
         image_container.style.height = image.offsetHeight.toString() + 'px'
         image_container.style.backgroundImage = 'url("img/noise.png")'
         image.style.visibility = 'hidden'
-        setTimeout( build_canvas, 1000)
+        setTimeout( build_canvas, 700)
     }, 3000)
 }
 
