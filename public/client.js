@@ -121,6 +121,7 @@ function get_new_image() {
 }
 
 function show_image(path) {
+    image_container.style.height = 'calc(80vh - 70px)'
     image_container.style.backgroundImage = ''
     image.src = path
     image.style.display = 'block'
@@ -130,6 +131,7 @@ function show_image(path) {
     erase_paint_button.style.display = 'none'
 
     setTimeout( () => {
+        image_container.style.height = image.offsetHeight.toString() + 'px'
         image_container.style.backgroundImage = 'url("img/noise.png")'
         image.style.visibility = 'hidden'
         setTimeout( build_canvas, 1000)

@@ -103,6 +103,7 @@ h2 {
 }
 #canvas_container {
     align-items: center;
+    position: relative;
 }
 
 #image_container {
