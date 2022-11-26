@@ -1,81 +1,28 @@
-// storage connection
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js" //from "firebase/app"
-import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-storage.js" //from "firebase/storage"
-
-// TODO: Replace the following with your app's Firebase project configuration
-// See: https://firebase.google.com/docs/web/learn-more#config-object
-const firebaseConfig = {
-  // ...
-  storageBucket: 'sketchit-38b52.appspot.com'
-}
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-
-// Initialize Cloud Storage and get a reference to the service
-const storage = getStorage(app)
-
-const namesRef = ref(storage, 'painting_names.csv')
-
-let image_names = []
-let current_image_idx = -1
-
-getDownloadURL(namesRef)
-  .then((url) => {
-    const xhr = new XMLHttpRequest()
-    xhr.responseType = 'text'
-    xhr.onload = (event) => {
-      image_names = parseCSV(xhr.response)
-    }
-    xhr.open('GET', url)
-    xhr.send()
-
-    // Or inserted into an <img> element
-    //const img = document.getElementById('myimg')
-    //img.setAttribute('src', url)
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-
-
-function parseCSV(csv) {
-    let rows = csv.split('\n')
-    let image_names = []
-    rows.forEach( row => {
-        image_names.push(row.split(';')[1])
-    })
-    return image_names
-}
-
-
 // button elements
-let show_image_button = document.getElementById("show_img")
+show_image_button = document.getElementById("show_img")
 //undo_button = document.getElementById("undo")
 //redo_button = document.getElementById('redo')
-let erase_paint_button = document.getElementById('erase_paint')
-let new_image_button = document.getElementById('new_image')
-let submit_button = document.getElementById('submit')
+erase_paint_button = document.getElementById('erase_paint')
+new_image_button = document.getElementById('new_image')
+submit_button = document.getElementById('submit')
 
-let home_button = document.getElementsByTagName('h1')[0]
+home_button = document.getElementsByTagName('h1')[0]
 
 // other elements
-let image = document.getElementById('image')
+image = document.getElementById('image')
 //noise = document.getElementById('noise')
-let canvas = document.getElementById('canvas')
-let example_container = document.getElementById('example_container')
-let canvas_container = document.getElementById('canvas_container')
-let image_container = document.getElementById('image_container')
+canvas = document.getElementById('canvas')
+example_container = document.getElementById('example_container')
+canvas_container = document.getElementById('canvas_container')
+image_container = document.getElementById('image_container')
 
 
 // event listeners for buttons
 show_image_button.addEventListener('click', () => {
     canvas_container.style.display = 'flex'
     example_container.style.display = 'none'
-    
-    if (current_image_idx < 0) get_new_image()
-    else show_image('paintings/' + image_names[current_image_idx])
+
+    show_image('img/example3.jpg')
 })
 
 submit_button.addEventListener('click', () => {
@@ -86,9 +33,12 @@ submit_button.addEventListener('click', () => {
 home_button.addEventListener('click', () => {
     canvas_container.style.display = 'none'
     example_container.style.display = 'flex'
+    console.log('HI')
 })
 
-new_image_button.addEventListener('click', get_new_image)
+new_image_button.addEventListener('click', () => {
+    show_image('img/example.jpg')
+})
 
 erase_paint_button.addEventListener('click', (event) => {
     if (event.target.innerText === "Erase") {
@@ -106,18 +56,15 @@ function upload_sketch() {
     sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
 
     // saves sketch locally
-    /*
     const link = document.createElement('a')
     link.download = 'img/download.png'
     link.href = canvas.toDataURL()
     link.click()
     link.delete
-    */
 }
 
-function get_new_image() {
-    current_image_idx = Math.floor(Math.random() * image_names.length)
-    show_image('paintings/' + image_names[current_image_idx])
+function load_image() {
+    image.src = 'img/example2.jpg'
 }
 
 function show_image(path) {
@@ -133,7 +80,7 @@ function show_image(path) {
         image_container.style.backgroundImage = 'url("img/noise.png")'
         image.style.visibility = 'hidden'
         setTimeout( build_canvas, 1000)
-    }, 3000)
+    }, 2000)
 }
 
 // canvas
