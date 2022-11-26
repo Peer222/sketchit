@@ -1,8 +1,11 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if false;
+    match /painting_names.csv {
+      allow read;
+    }
+    match /sketches {
+    	allow create;
     }
   }
 }
