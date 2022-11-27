@@ -144,7 +144,12 @@ function get_new_image() {
     show_image('paintings/' + image_names[current_image_idx])
 }
 
+let image_timer = 0
+let noise_timer = 0
+
 function show_image(path) {
+    clearTimeout(image_timer)
+    clearTimeout(noise_timer)
     image_container.style.height = 'calc(80vh - 70px)'
     image_container.style.backgroundImage = ''
     image.src = path
@@ -154,11 +159,11 @@ function show_image(path) {
     canvas.style.display = 'none'
     erase_paint_button.style.display = 'none'
 
-    setTimeout( () => {
+    image_timer = setTimeout( () => {
         image_container.style.height = image.offsetHeight.toString() + 'px'
         image_container.style.backgroundImage = 'url("img/noise.png")'
         image.style.visibility = 'hidden'
-        setTimeout( build_canvas, 700)
+        noise_timer = setTimeout( build_canvas, 700)
     }, 3000)
 }
 
