@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>check sketches</title>
+    <link rel="icon" type="image/png" href="img/pencil.png">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+
+  <body class="col_container">
+    <div class="content row_container">
+      <div class="image_container">
+        <img id="sketch" src="img/sketch_example.png">
+      </div>
+      <div class="image_container">
+        <img id="image" src="img/painting_example.jpg">
+      </div>
+
+      <div id="submitted" class="col_container">
+        <img src="img/checkmark.svg" height="55px">
+        <div class="msg">
+          <h2> Finished! </h2>
+        </div>
+      </div>
+    </div>
+    <div class="row_container" id="controls">
+      <button id="backward"> - </button>
+      <button id="reject"> reject </button>
+      <button id="accept"> accept </button>
+      <button id="forward"> + </button>
+    </div>
+
+    <script src="client.js"></script>
+  </body>
+</html>
