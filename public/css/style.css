@@ -13,6 +13,8 @@ html, body {
 
     font-family: Roboto_Light, sans-serif;
     font-size: 15px;
+
+    overflow: hidden;
 }
 
 button {
@@ -104,6 +106,7 @@ h2 {
 #canvas_container {
     align-items: center;
     position: relative;
+    touch-action: none;
 }
 
 #image_container {

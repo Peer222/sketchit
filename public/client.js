@@ -224,6 +224,7 @@ function end_draw(e) {
 
 function draw(e) {
     if (!is_drawing) return
+    e.preventDefault()
     let x = e.clientX
     let y = e.clientY
     if (is_touch_device) {
