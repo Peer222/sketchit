@@ -4,6 +4,9 @@ service firebase.storage {
     match /painting_names.csv {
       allow read;
     }
+    match /painting_infos.csv {
+      allow read;
+    }
     match /{sketches=**} {
     	allow create;
     }

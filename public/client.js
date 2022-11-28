@@ -3,7 +3,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js" //from "firebase/app"
 import { getStorage, ref, getDownloadURL, uploadBytes } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-storage.js" //from "firebase/storage"
 
-// TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
   // ...
@@ -16,7 +15,15 @@ const app = initializeApp(firebaseConfig)
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(app)
 
-const namesRef = ref(storage, 'painting_names.csv')
+const show_info = window.matchMedia("(min-width:800px)").matches
+console.log(show_info)
+
+if (show_info) {
+    var namesRef = ref(storage, 'painting_infos.csv')
+} else {
+    var namesRef = ref(storage, 'painting_names.csv')
+}
+
 const sketchRef = ref(storage, 'sketches')
 
 let image_names = []
@@ -31,10 +38,6 @@ getDownloadURL(namesRef)
     }
     xhr.open('GET', url)
     xhr.send()
-
-    // Or inserted into an <img> element
-    //const img = document.getElementById('myimg')
-    //img.setAttribute('src', url)
   })
   .catch((error) => {
     console.log(error)
@@ -42,19 +45,25 @@ getDownloadURL(namesRef)
 
 
 function parseCSV(csv) {
-    let rows = csv.split('\n')
-    let image_names = []
-    rows.forEach( row => {
-        image_names.push(row.split(';')[1])
-    })
-    return image_names
+    let image_infos = []
+    if (show_info) {
+        csv = csv.split('filename;date;artist\r\n')[1]
+        const rows = csv.split('\r\n')
+        rows.forEach( row => {
+            image_infos.push(row.split(';'))
+        })
+    } else {
+        const rows = csv.split('\n')
+        rows.forEach( row => {
+            image_infos.push(row.split(';')[1])
+        })
+    }
+    return image_infos
 }
 
 
 // button elements
 let show_image_button = document.getElementById("show_img")
-//undo_button = document.getElementById("undo")
-//redo_button = document.getElementById('redo')
 let erase_paint_button = document.getElementById('erase_paint')
 let new_image_button = document.getElementById('new_image')
 let submit_button = document.getElementById('submit')
@@ -68,12 +77,13 @@ let example_container = document.getElementById('example_container')
 let canvas_container = document.getElementById('canvas_container')
 let image_container = document.getElementById('image_container')
 let submitted_message = document.getElementById('submitted')
+let image_info = document.getElementById('image_info')
 
 
 // event listeners for buttons
 show_image_button.addEventListener('click', () => {
     if (current_image_idx < 0 || sketch_uploaded) get_new_image()
-    else show_image('paintings/' + image_names[current_image_idx])
+    else show_image(current_image_idx)
 })
 
 submit_button.addEventListener('click', () => {
@@ -100,7 +110,6 @@ erase_paint_button.addEventListener('click', (event) => {
 
 // helper functions
 function upload_sketch() {
-    //let sketch_data = canvas_context.getImageData(0, 0, canvas.width, canvas.height)
     let sketch_data = canvas.toDataURL('image/png')
     sketch_data = sketch_data.replace('data:image/png;base64,', "")
 
@@ -113,7 +122,8 @@ function upload_sketch() {
     sketch_data = new Uint8Array(byteNumbers)
 
     let random_number = Math.floor(Math.random() * 100000000)
-    let file_name = current_image_idx.toString() + '-' + image_names[current_image_idx].split('.')[0] + '-' + random_number + '.' + 'png'
+    if (show_info) var file_name = current_image_idx.toString() + '-' + image_names[current_image_idx][0].split('.')[0] + '-' + random_number + '.' + 'png'
+    else var file_name = current_image_idx.toString() + '-' + image_names[current_image_idx].split('.')[0] + '-' + random_number + '.' + 'png'
 
     const fileRef = ref(sketchRef, file_name)
     const metadata = { contentType: 'image/png' }
@@ -124,14 +134,6 @@ function upload_sketch() {
         submitted_message.style.display = 'flex'
       })
 
-    // saves sketch locally
-    /*
-    const link = document.createElement('a')
-    link.download = 'img/download.png'
-    link.href = canvas.toDataURL()
-    link.click()
-    link.delete
-    */
 }
 
 function get_new_image() {
@@ -141,13 +143,21 @@ function get_new_image() {
     canvas_container.style.pointerEvents = 'auto'
 
     current_image_idx = Math.floor(Math.random() * image_names.length)
-    show_image('paintings/' + image_names[current_image_idx])
+
+    show_image(current_image_idx)
 }
 
 let image_timer = 0
 let noise_timer = 0
 
-function show_image(path) {
+function show_image(current_image_idx) {
+    if (show_info) {
+        image_info.innerText = image_names[current_image_idx][2] 
+        if (image_names[current_image_idx][1].length > 0) image_info.innerText += ', ' + image_names[current_image_idx][1].split('.0')[0]
+        var path = 'paintings/' + image_names[current_image_idx][0]
+    }
+    else var path = 'paintings/' + image_names[current_image_idx]
+
     clearTimeout(image_timer)
     clearTimeout(noise_timer)
     image_container.style.height = 'calc(80vh - 70px)'
@@ -171,9 +181,6 @@ function show_image(path) {
 
 const canvas_context = canvas.getContext('2d')
 canvas_context.strokeStyle = 9
-
-// useful to erase google functionality
-//canvas_context.strokeStyle = 0
 
 let is_drawing = false
 let sketch_started = false
