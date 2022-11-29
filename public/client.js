@@ -185,7 +185,7 @@ canvas_context.strokeStyle = 9
 let is_drawing = false
 let sketch_started = false
 let sketch_uploaded = false
-const LINE_WIDTH = 6
+const LINE_WIDTH = 4
 
 let erase_mode = false
 
