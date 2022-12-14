@@ -78,7 +78,11 @@ let canvas_container = document.getElementById('canvas_container')
 let image_container = document.getElementById('image_container')
 let submitted_message = document.getElementById('submitted')
 let image_info = document.getElementById('image_info')
+let header = document.getElementsByTagName('h1')[0]
 
+console.log(navigator.userAgent)
+console.log(navigator.maxTouchPoints)
+if ( (navigator.userAgent.includes('Safari') && navigator.userAgent.includes('iPad')) || (navigator.userAgent.includes('Macintosh') && navigator.userAgent.includes('Safari') && navigator.maxTouchPoints > 0) ) header.style.display = 'none'
 
 // event listeners for buttons
 show_image_button.addEventListener('click', () => {
@@ -185,7 +189,7 @@ canvas_context.strokeStyle = 9
 let is_drawing = false
 let sketch_started = false
 let sketch_uploaded = false
-const LINE_WIDTH = 4
+const LINE_WIDTH = 3
 
 let erase_mode = false
 
